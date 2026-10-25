@@ -1,0 +1,107 @@
+Oct 18 07:00:00 server sshd[812]: Server listening on 0.0.0.0 port 22.
+Oct 18 08:47:17 server sshd[2679]: Accepted password for bob from 10.0.0.9 port 44572 ssh2
+Oct 18 10:44:27 server sshd[4527]: Accepted password for carol from 10.0.0.12 port 45094 ssh2
+Oct 18 11:14:32 server sshd[4257]: Accepted password for erin from 10.0.0.5 port 58390 ssh2
+Oct 18 13:06:05 server sshd[6635]: Accepted password for dave from 10.0.0.5 port 51763 ssh2
+Oct 18 14:05:35 server sshd[4150]: Accepted password for carol from 192.168.1.14 port 51850 ssh2
+Oct 18 16:05:37 server sshd[2535]: Accepted password for dave from 10.0.0.5 port 40976 ssh2
+Oct 18 16:26:14 server sshd[1106]: Accepted password for dave from 192.168.1.14 port 49115 ssh2
+Oct 18 17:16:51 server sshd[3045]: Accepted password for alice from 10.0.0.21 port 57571 ssh2
+Oct 19 08:42:14 server sshd[2654]: Accepted password for carol from 10.0.0.5 port 47628 ssh2
+######## rotated by logrotate ########
+Oct 19 09:55:10 server sshd[7755]: Failed password for bob from 10.0.0.9 port 45801 ssh2
+Oct 19 11:10:29 server sshd[4598]: Accepted password for dave from 10.0.0.12 port 58250 ssh2
+Oct 19 11:42:17 server sshd[9751]: Accepted password for alice from 192.168.1.14 port 45607 ssh2
+Oct 19 11:47:35 server sshd[8019]: Accepted password for erin from 10.0.0.12 port 59155 ssh2
+Oct 19 13:53:49 server sshd[6168]: Accepted password for alice from 10.0.0.9 port 41051 ssh2
+Oct 19 14:17:04 server sshd[4483]: Accepted password for bob from 192.168.1.14 port 50311 ssh2
+Oct 19 14:17:29 server sshd[6820]: Accepted password for carol from 10.0.0.9 port 52130 ssh2
+Oct 19 15:25:56 server sshd[3287]: Accepted password for dave from 10.0.0.9 port 48679 ssh2
+Oct 20 01:00:00 server sshd[812]: Received signal 15; terminating.
+Oct 20 01:01:00 server sshd[955]: Server listening on 0.0.0.0 port 22.
+Oct 20 08:55:07 server sshd[2040]: Accepted password for bob from 10.0.0.9 port 53833 ssh2
+Oct 20 09:01:11 server sshd[7745]: Failed password for dave from 10.0.0.21 port 50885 ssh2
+Oct 20 09:43:56 server sshd[2827]: Accepted password for erin from 10.0.0.12 port 51146 ssh2
+Oct 20 09:48:34 server sshd[3705]: Accepted password for bob from 10.0.0.9 port 55574 ssh2
+Oct 20 10:23:48 server sshd[1009]: Accepted password for bob from 192.168.1.14 port 57378 ssh2
+Oct 20 10:32:58 server sshd[4258]: Accepted password for alice from 10.0.0.12 port 56635 ssh2
+Oct 21 03:99:12 server sshd[2211]: Failed password for root from 203.0.113.45 port 22 ssh2
+Oct 20 11:03:15 server sshd[8962]: Accepted password for erin from 10.0.0.5 port 42806 ssh2
+Oct 20 11:45:19 server sshd[9479]: Accepted password for dave from 10.0.0.12 port 54355 ssh2
+Oct 20 12:27:10 server sshd[9201]: Accepted password for dave from 10.0.0.5 port 48630 ssh2
+Oct 20 12:33:55 server sshd[9835]: Accepted password for erin from 10.0.0.21 port 46940 ssh2
+Oct 20 14:23:14 server sshd[2489]: Accepted password for bob from 192.168.1.14 port 56171 ssh2
+Oct 20 14:24:38 server sshd[1188]: Accepted password for dave from 192.168.1.14 port 48238 ssh2
+Oct 20 17:20:31 server sshd[6038]: Accepted password for alice from 10.0.0.5 port 51894 ssh2
+Oct 21 03:12:05 server sshd[6728]: Failed password for root from 203.0.113.45 port 55083 ssh2
+Oct 21 03:12:11 server sshd[4652]: Failed password for admin from 203.0.113.45 port 47457 ssh2
+Oct 21 03:12:13 server sshd[7528]: Failed password for invalid user oracle from 203.0.113.45 port 46328 ssh2
+Oct 21 03:12:20 server sshd[2137]: Failed password for invalid user test from 203.0.113.45 port 49129 ssh2
+Oct 21 03:12:26 server sshd[9346]: Failed password for ubuntu from 203.0.113.45 port 51506 ssh2
+Oct 21 03:12:34 server sshd[6425]: Failed password for root from 203.0.113.45 port 57570 ssh2
+Oct 21 03:12:36 server sshd[5279]: Failed password for admin from 203.0.113.45 port 43779 ssh2
+Oct 21 03:12:40 server sshd[5349]: Failed password for invalid user postgres from 203.0.113.45 port 59024 ssh2
+Oct 21 03:12:42 server sshd[8119]: Failed password for root from 203.0.113.45 port 43552 ssh2
+Oct 21 04:00:00 server sshd[2211]: Failed password for root from 999.10.10.10 port 22 ssh2
+Oct 21 03:12:49 server sshd[8149]: Failed password for admin from 203.0.113.45 port 50278 ssh2
+Oct 21 03:12:52 server sshd[4114]: Failed password for invalid user guest from 203.0.113.45 port 52622 ssh2
+Oct 21 03:12:58 server sshd[8144]: Failed password for root from 203.0.113.45 port 41454 ssh2
+Oct 21 03:13:00 server sshd[9821]: Failed password for admin from 203.0.113.45 port 57036 ssh2
+Oct 21 03:13:05 server sshd[8066]: Failed password for invalid user user from 203.0.113.45 port 51934 ssh2
+Oct 21 03:13:08 server sshd[6143]: Failed password for root from 203.0.113.45 port 50819 ssh2
+Oct 21 03:13:11 server sshd[9308]: Failed password for admin from 203.0.113.45 port 49840 ssh2
+Oct 21 03:13:17 server sshd[6344]: Failed password for root from 203.0.113.45 port 53382 ssh2
+Oct 21 03:13:25 server sshd[3085]: Failed password for admin from 203.0.113.45 port 49688 ssh2
+Oct 21 03:13:40 server sshd[4143]: Accepted password for admin from 203.0.113.45 port 51022 ssh2
+Oct 21 08:25:46 server sshd[4139]: Accepted password for carol from 10.0.0.5 port 48147 ssh2
+Oct 21 08:41:34 server sshd[3724]: Accepted password for alice from 10.0.0.5 port 47745 ssh2
+Oct 21 08:55:21 server sshd[5562]: Accepted password for alice from 192.168.1.14 port 47798 ssh2
+Oct 21 09:15:14 server sshd[4770]: Accepted password for alice from 10.0.0.12 port 40689 ssh2
+Oct 21 09:51:42 server sshd[5371]: Failed password for erin from 192.168.1.14 port 48131 ssh2
+Oct 21 11:34:28 server sshd[5563]: Accepted password for bob from 10.0.0.21 port 46012 ssh2
+Oct 32 10:00:00 server sshd[1]: Accepted password for bob from 10.0.0.9 port 22 ssh2
+Oct 21 11:50:30 server sshd[2588]: Accepted password for dave from 10.0.0.9 port 43090 ssh2
+Oct 21 14:22:27 server sshd[2612]: Accepted password for dave from 10.0.0.21 port 41775 ssh2
+Oct 21 14:31:30 server sshd[3697]: Accepted password for bob from 10.0.0.21 port 41921 ssh2
+Oct 21 15:13:34 server sshd[8744]: Accepted password for bob from 192.168.1.14 port 58881 ssh2
+Oct 21 15:15:55 server sshd[2604]: Accepted password for alice from 10.0.0.21 port 58033 ssh2
+Oct 21 17:14:00 server sshd[2104]: Accepted password for alice from 10.0.0.5 port 47501 ssh2
+Oct 22 08:24:16 server sshd[8973]: Accepted password for dave from 10.0.0.12 port 53861 ssh2
+Oct 22 08:29:39 server sshd[9808]: Accepted password for erin from 10.0.0.5 port 42400 ssh2
+Oct 22 08:47:20 server sshd[8811]: Accepted password for alice from 10.0.0.5 port 59142 ssh2
+Oct 22 09:10:50 server sshd[7267]: Failed password for alice from 10.0.0.5 port 43542 ssh2
+Oct 22 09:54:11 server sshd[4853]: Accepted password for alice from 192.168.1.14 port 42226 ssh2
+Oct 22 09:55:02 server sshd[4644]: Failed password for alice from 10.0.0.5 port 55423 ssh2
+Oct 22 10:12:18 server sshd[9883]: Accepted password for bob from 10.0.0.5 port 58978 ssh2
+Oct 22 10:42:41 server sshd[2188]: Accepted password for carol from 10.0.0.21 port 50360 ssh2
+Oct 22 11:00:00 server sshd[2480]: error: maximum authentication attempts exceeded for root from 198.51.100.77 port 40111 ssh2
+Oct 22 11:32:16 server sshd[5002]: Accepted password for bob from 10.0.0.12 port 42254 ssh2
+Oct 21 04:00
+Oct 22 12:13:42 server sshd[7484]: Accepted password for carol from 10.0.0.9 port 48703 ssh2
+Oct 22 14:07:56 server sshd[1651]: Accepted password for erin from 10.0.0.9 port 58970 ssh2
+Oct 22 14:09:00 server sshd[3851]: Failed password for root from 198.51.100.77 port 52423 ssh2
+Oct 22 14:12:00 server sshd[9977]: Failed password for root from 198.51.100.77 port 53306 ssh2
+Oct 22 14:13:00 server sshd[5700]: Failed password for root from 198.51.100.77 port 49957 ssh2
+Oct 22 14:15:00 server sshd[6279]: Failed password for root from 198.51.100.77 port 54086 ssh2
+Oct 22 14:19:00 server sshd[8244]: Failed password for root from 198.51.100.77 port 54476 ssh2
+Oct 22 14:21:00 server sshd[8752]: Failed password for root from 198.51.100.77 port 56750 ssh2
+Oct 22 14:23:00 server sshd[5649]: Failed password for root from 198.51.100.77 port 42778 ssh2
+Oct 22 16:58:54 server sshd[9320]: Accepted password for erin from 10.0.0.9 port 41863 ssh2
+Oct 22 17:05:26 server sshd[6183]: Accepted password for erin from 192.168.1.14 port 57130 ssh2
+Oct 23 08:05:40 server sshd[1058]: Accepted password for dave from 10.0.0.12 port 41444 ssh2
+Oct 23 09:22:49 server sshd[4878]: Accepted password for erin from 10.0.0.21 port 45064 ssh2
+Oct 23 09:47:35 server sshd[4450]: Accepted password for bob from 10.0.0.12 port 49232 ssh2
+Oct 23 12:10:28 server sshd[1128]: Accepted password for erin from 10.0.0.12 port 57332 ssh2
+Oct 23 12:23:57 server sshd[5088]: Accepted password for alice from 10.0.0.12 port 46883 ssh2
+
+Oct 23 13:13:43 server sshd[5114]: Accepted password for carol from 192.168.1.14 port 56008 ssh2
+Oct 23 13:37:35 server sshd[1685]: Accepted password for bob from 10.0.0.21 port 44176 ssh2
+Oct 23 13:49:08 server sshd[8007]: Accepted password for carol from 10.0.0.9 port 54478 ssh2
+Oct 23 16:00:07 server sshd[1590]: Accepted password for alice from 10.0.0.9 port 57877 ssh2
+Oct 23 16:19:59 server sshd[2891]: Accepted password for alice from 10.0.0.9 port 48666 ssh2
+Oct 23 22:41:25 server sshd[2530]: Failed password for carol from 192.0.2.88 port 50983 ssh2
+Oct 23 22:42:15 server sshd[4680]: Failed password for carol from 192.0.2.88 port 50171 ssh2
+Oct 23 22:43:00 server sshd[1400]: Failed password for carol from 192.0.2.88 port 44828 ssh2
+Oct 23 22:43:25 server sshd[8784]: Failed password for carol from 192.0.2.88 port 48023 ssh2
+Oct 23 22:43:54 server sshd[7790]: Failed password for carol from 192.0.2.88 port 54923 ssh2
+this line is not a log entry at all

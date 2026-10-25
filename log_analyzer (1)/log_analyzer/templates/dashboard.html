@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% block title %}Security Dashboard{% endblock %}
+
+{% macro badge(code) -%}
+  <span class="badge b-{{ code|lower }}">{{ code.replace('_', ' ').title() }}</span>
+{%- endmacro %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Security Dashboard</h1>
+    <p class="muted">
+      {% if d.stats.total %}
+        Based on {{ '{:,}'.format(d.stats.total) }} records from {{ d.stats.first_time|dt }} to {{ d.stats.last_time|dt }}
+      {% else %}No data yet{% endif %}
+    </p>
+  </div>
+  <form method="post" action="{{ url_for('recompute') }}">
+    <button class="btn btn-light" type="submit">↻ Re-run analysis</button>
+  </form>
+</div>
+
+{% if not d.stats.total %}
+  <div class="card empty">
+    <h2>No log records yet</h2>
+    <p>Upload a log file to see statistics here. Sample files are available on the upload page.</p>
+    <a class="btn" href="{{ url_for('upload') }}">Upload a log file</a>
+  </div>
+{% else %}
+
+<div class="notice">
+  <strong>How to read this page:</strong> “Needs investigation” and “Suspicious IPs” come from simple threshold rules
+  (e.g. ≥ {{ d.ip_threshold }} failed logins from one IP). They are <strong>indicators to review, not proof of an attack</strong>.
+  Thresholds can be changed on the <a href="{{ url_for('rules') }}">Rules</a> page.
+</div>
+
+<section class="cards">
+  <div class="stat"><span class="stat-label">Total log records</span><span class="stat-value">{{ '{:,}'.format(d.stats.total) }}</span></div>
+  <div class="stat ok"><span class="stat-label">Successful logins</span><span class="stat-value">{{ '{:,}'.format(d.stats.success) }}</span></div>
+  <div class="stat bad"><span class="stat-label">Failed logins</span><span class="stat-value">{{ '{:,}'.format(d.stats.failed) }}</span></div>
+  <div class="stat err"><span class="stat-label">System errors</span><span class="stat-value">{{ '{:,}'.format(d.stats.errors) }}</span></div>
+  <div class="stat warn"><span class="stat-label">Suspicious IPs</span><span class="stat-value">{{ d.suspicious_ips|length }}</span><span class="stat-sub">≥ {{ d.ip_threshold }} failed logins</span></div>
+  <div class="stat warn"><span class="stat-label">Needs investigation</span><span class="stat-value">{{ '{:,}'.format(d.flagged_events) }}</span><span class="stat-sub">flagged events</span></div>
+</section>
+
+<section class="grid-2">
+  <div class="card">
+    <h2>Daily activity <small>(last {{ d.daily|length }} days with data)</small></h2>
+    {% set ns = namespace(mx=1) %}
+    {% for day in d.daily %}{% set ns.mx = [ns.mx, day.success, day.failed, day.errors]|max %}{% endfor %}
+    <div class="chart">
+      {% for day in d.daily %}
+      <div class="chart-col" title="{{ day.day }}: {{ day.success }} success, {{ day.failed }} failed, {{ day.errors }} errors">
+        <div class="bars">
+          <span class="bar bar-ok" style="height: {{ (day.success / ns.mx * 100)|round(1) }}%"></span>
+          <span class="bar bar-bad" style="height: {{ (day.failed / ns.mx * 100)|round(1) }}%"></span>
+          <span class="bar bar-err" style="height: {{ (day.errors / ns.mx * 100)|round(1) }}%"></span>
+        </div>
+        <span class="chart-label">{{ day.day }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="legend">
+      <span><i class="dot bar-ok"></i>Successful logins</span>
+      <span><i class="dot bar-bad"></i>Failed logins</span>
+      <span><i class="dot bar-err"></i>System errors</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Event mix</h2>
+    {% set total = d.stats.total %}
+    {% set other = total - d.stats.success - d.stats.failed - d.stats.errors %}
+    {% set p1 = d.stats.success / total * 100 %}
+    {% set p2 = p1 + d.stats.failed / total * 100 %}
+    {% set p3 = p2 + d.stats.errors / total * 100 %}
+    <div class="donut-wrap">
+      <div class="donut" style="background: conic-gradient(var(--ok) 0 {{ p1|round(2) }}%, var(--bad) {{ p1|round(2) }}% {{ p2|round(2) }}%, var(--err) {{ p2|round(2) }}% {{ p3|round(2) }}%, var(--other) {{ p3|round(2) }}% 100%);">
+        <div class="donut-hole"><strong>{{ '{:,}'.format(total) }}</strong><span>records</span></div>
+      </div>
+      <ul class="legend-list">
+        <li><i class="dot bar-ok"></i>Successful logins <b>{{ (d.stats.success / total * 100)|round(1) }}%</b></li>
+        <li><i class="dot bar-bad"></i>Failed logins <b>{{ (d.stats.failed / total * 100)|round(1) }}%</b></li>
+        <li><i class="dot bar-err"></i>System errors <b>{{ (d.stats.errors / total * 100)|round(1) }}%</b></li>
+        <li><i class="dot dot-other"></i>Warnings &amp; info <b>{{ (other / total * 100)|round(1) }}%</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="card">
+    <h2>Suspicious IP addresses <small>(≥ {{ d.ip_threshold }} failed logins)</small></h2>
+    {% if d.suspicious_ips %}
+    {% set mx = d.suspicious_ips[0].failures %}
+    <table>
+      <thead><tr><th>IP address</th><th>Failures</th><th>Usernames tried</th><th>Later logged in?</th><th>Last seen</th></tr></thead>
+      <tbody>
+      {% for ip in d.suspicious_ips %}
+        <tr>
+          <td><a href="{{ url_for('records', ip=ip.ip_address) }}"><code>{{ ip.ip_address }}</code></a></td>
+          <td class="meter-cell"><span class="meter"><span style="width: {{ (ip.failures / mx * 100)|round }}%"></span></span> <b>{{ ip.failures }}</b></td>
+          <td>{{ ip.usernames_tried }}</td>
+          <td>{% if ip.successes %}<span class="badge b-flag">Yes ({{ ip.successes }})</span>{% else %}<span class="muted">No</span>{% endif %}</td>
+          <td>{{ ip.last_seen|dt }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="muted">No IP address has reached the threshold.</p>{% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Frequently occurring errors</h2>
+    {% if d.frequent_errors %}
+    <table>
+      <thead><tr><th>Error</th><th>Count</th><th>Last seen</th></tr></thead>
+      <tbody>
+      {% for e in d.frequent_errors %}
+        <tr>
+          <td>{{ e.example }}
+              {% if e.occurrences >= d.error_threshold %}<span class="badge b-flag">frequent</span>{% endif %}
+              {% if e.severity == 'CRITICAL' %}<span class="badge b-system_error">critical</span>{% endif %}</td>
+          <td><b>{{ e.occurrences }}</b></td>
+          <td>{{ e.last_seen|dt }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="muted small">Errors are grouped by pattern (numbers ignored). “Frequent” = seen ≥ {{ d.error_threshold }} times.</p>
+    {% else %}<p class="muted">No system errors recorded.</p>{% endif %}
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="card">
+    <h2>Events requiring investigation</h2>
+    <table class="compact">
+      <thead><tr><th>Rule</th><th>Threshold</th><th>Events flagged</th></tr></thead>
+      <tbody>
+      {% for r in d.rule_summary %}
+        <tr class="{{ '' if r.enabled else 'dim' }}">
+          <td>{{ r.title }}{% if not r.enabled %} <span class="muted">(off)</span>{% endif %}</td>
+          <td>{{ r.threshold if r.rule_code != 'CRITICAL_EVENT' else '—' }}</td>
+          <td><b>{{ r.flagged }}</b></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="small"><a href="{{ url_for('records', status='flagged') }}">View all flagged events →</a></p>
+  </div>
+
+  <div class="card">
+    <h2>Accounts with repeated failures <small>(≥ {{ d.user_threshold }})</small></h2>
+    {% if d.failing_users %}
+    <table class="compact">
+      <thead><tr><th>Username</th><th>Failures</th><th>From IPs</th><th>Last seen</th></tr></thead>
+      <tbody>
+      {% for u in d.failing_users %}
+        <tr><td><a href="{{ url_for('records', username=u.username, event_type='LOGIN_FAILED') }}">{{ u.username }}</a></td>
+            <td><b>{{ u.failures }}</b></td><td>{{ u.ips }}</td><td>{{ u.last_seen|dt }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="muted">No account has reached the threshold.</p>{% endif %}
+  </div>
+</section>
+
+<section class="card">
+  <h2>Most recent flagged events</h2>
+  {% if d.flagged_recent %}
+  <table>
+    <thead><tr><th>Time</th><th>User</th><th>IP</th><th>Event</th><th>Why flagged</th></tr></thead>
+    <tbody>
+    {% for e in d.flagged_recent %}
+      <tr>
+        <td>{{ e.event_time|dt }}</td>
+        <td>{{ e.username or '—' }}</td>
+        <td>{% if e.ip_address %}<code>{{ e.ip_address }}</code>{% else %}—{% endif %}</td>
+        <td>{{ badge(e.type_code) }}</td>
+        <td class="small">{{ e.flag_reasons }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="muted">Nothing is currently flagged.</p>{% endif %}
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Recent log records</h2><a href="{{ url_for('records') }}">Open full table →</a></div>
+  <table>
+    <thead><tr><th>Time</th><th>User</th><th>IP</th><th>Event</th><th>Message</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for e in d.recent %}
+      <tr>
+        <td>{{ e.event_time|dt }}</td>
+        <td>{{ e.username or '—' }}</td>
+        <td>{% if e.ip_address %}<code>{{ e.ip_address }}</code>{% else %}—{% endif %}</td>
+        <td>{{ badge(e.type_code) }}</td>
+        <td class="msg">{{ e.message }}</td>
+        <td>{% if e.flag_rules %}<span class="badge b-flag" title="{{ e.flag_reasons }}">Investigate</span>{% else %}<span class="muted">OK</span>{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Detection Rules{% endblock %}
+
+{% block content %}
+<div class="page-head"><div><h1>Detection Rules &amp; Thresholds</h1>
+<p class="muted">Stored in the MySQL table <code>detection_rules</code>. Saving re-runs the analysis on all stored records.</p></div></div>
+
+<div class="notice">
+  These are simple <strong>rule-based indicators</strong>: they count events in the stored logs and compare the count with a number you choose.
+  A flagged event means “a person should look at this” — it is <strong>not proof of an attack</strong>.
+  Real tools also use time windows, geolocation and threat intelligence; this project deliberately keeps rules simple and explainable.
+</div>
+
+<form class="card" method="post" action="{{ url_for('rules') }}">
+  <table>
+    <thead><tr><th>Enabled</th><th>Rule</th><th>What it checks</th><th>Threshold</th></tr></thead>
+    <tbody>
+    {% for r in rules %}
+      <tr>
+        <td><input type="checkbox" name="enabled_{{ r.rule_code }}" {{ 'checked' if r.enabled }}></td>
+        <td><b>{{ r.title }}</b><div class="small muted"><code>{{ r.rule_code }}</code></div></td>
+        <td>{{ r.description }}</td>
+        <td><input class="num" type="number" min="1" max="100000" name="threshold_{{ r.rule_code }}" value="{{ r.threshold }}" {{ 'disabled' if r.rule_code == 'CRITICAL_EVENT' }}></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <button class="btn" type="submit">Save &amp; re-run analysis</button>
+</form>
+{% endblock %}

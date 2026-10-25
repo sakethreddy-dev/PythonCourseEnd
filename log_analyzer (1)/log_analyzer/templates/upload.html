@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Upload Logs{% endblock %}
+
+{% block content %}
+<div class="page-head"><div><h1>Upload Log File</h1>
+<p class="muted">The file is parsed with regular expressions and saved to MySQL.</p></div></div>
+
+<div class="grid-2">
+  <form class="card" method="post" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+    <h2>Import a log file</h2>
+    <label>Log file (.log or .txt, max 10 MB)
+      <input type="file" name="logfile" accept=".log,.txt" required>
+    </label>
+    <label>Year of the log
+      <input type="number" name="year" value="{{ year }}" min="1990" max="2100">
+      <span class="small muted">Only used for syslog lines like <code>Oct 21 03:12:44 …</code> which have no year.</span>
+    </label>
+    <button class="btn" type="submit">Upload &amp; analyze</button>
+    <p class="small muted">Uploading the exact same file twice is blocked, and individual lines that were
+    already imported are skipped.</p>
+  </form>
+
+  <div class="card">
+    <h2>Need data to demonstrate?</h2>
+    <p>Download the two sample files and upload them (use year <strong>2026</strong>):</p>
+    <ul class="plain">
+      <li><a class="btn btn-light" href="{{ url_for('sample_file', filename='sample_auth.log') }}">⬇ sample_auth.log</a> <span class="small muted">sshd-style logins, includes a brute-force pattern</span></li>
+      <li><a class="btn btn-light" href="{{ url_for('sample_file', filename='sample_app.log') }}">⬇ sample_app.log</a> <span class="small muted">application log with repeated errors</span></li>
+    </ul>
+    <h3>Recognised formats</h3>
+    <pre class="code">Oct 21 03:12:44 server sshd[2211]: Failed password for root from 203.0.113.45 port 52344 ssh2
+2026-10-21 10:15:02 ERROR db: Database connection timeout after 30s</pre>
+    <p class="small muted">Lines that match neither format, or contain an invalid date or IP address, are rejected and listed — they never crash the import.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Import history</h2>
+  {% if history %}
+  <table>
+    <thead><tr><th>File</th><th>Uploaded</th><th>Lines</th><th>Saved</th><th>Rejected</th><th>Duplicates</th><th></th></tr></thead>
+    <tbody>
+    {% for h in history %}
+      <tr><td>{{ h.original_name }}</td><td>{{ h.uploaded_at|dt }}</td><td>{{ h.total_lines }}</td>
+          <td><b>{{ h.parsed_lines }}</b></td><td>{{ h.rejected_lines }}</td><td>{{ h.duplicate_events }}</td>
+          <td><a href="{{ url_for('import_detail', file_id=h.file_id) }}">Details</a></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="muted">Nothing imported yet.</p>{% endif %}
+</div>
+{% endblock %}

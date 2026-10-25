@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card empty">
+  <h2>{{ title }}</h2>
+  <p><code>{{ message }}</code></p>
+  {% if hint %}<p class="muted">{{ hint }}</p>{% endif %}
+  <a class="btn" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+</div>
+{% endblock %}

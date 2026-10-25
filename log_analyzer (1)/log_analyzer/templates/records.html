@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Log Records{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div><h1>Log Records</h1>
+  <p class="muted">{{ '{:,}'.format(r.total) }} matching record{{ '' if r.total == 1 else 's' }} · page {{ r.page }} of {{ r.pages }}</p></div>
+</div>
+
+<form class="card filters" method="get" action="{{ url_for('records') }}">
+  <label class="wide">Search
+    <input type="text" name="q" value="{{ f.get('q','') }}" placeholder="user, IP, message or service">
+  </label>
+  <label>Event type
+    <select name="event_type">
+      <option value="">All</option>
+      {% for t in types %}<option value="{{ t.type_code }}" {{ 'selected' if f.get('event_type') == t.type_code }}>{{ t.type_code.replace('_',' ').title() }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Category
+    <select name="category">
+      <option value="">All</option>
+      <option value="AUTHENTICATION" {{ 'selected' if f.get('category') == 'AUTHENTICATION' }}>Authentication</option>
+      <option value="SYSTEM" {{ 'selected' if f.get('category') == 'SYSTEM' }}>System</option>
+    </select>
+  </label>
+  <label>Severity
+    <select name="severity">
+      <option value="">All</option>
+      {% for s in ['INFO','WARNING','ERROR','CRITICAL'] %}<option value="{{ s }}" {{ 'selected' if f.get('severity') == s }}>{{ s.title() }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Investigation
+    <select name="status">
+      <option value="">All</option>
+      <option value="flagged" {{ 'selected' if f.get('status') == 'flagged' }}>Needs investigation</option>
+      <option value="clean" {{ 'selected' if f.get('status') == 'clean' }}>Not flagged</option>
+    </select>
+  </label>
+  <label>Username <input type="text" name="username" value="{{ f.get('username','') }}"></label>
+  <label>IP address <input type="text" name="ip" value="{{ f.get('ip','') }}" placeholder="e.g. 203.0.113"></label>
+  <label>From <input type="date" name="date_from" value="{{ f.get('date_from','') }}"></label>
+  <label>To <input type="date" name="date_to" value="{{ f.get('date_to','') }}"></label>
+  <div class="filter-actions">
+    <button class="btn" type="submit">Apply filters</button>
+    <a class="btn btn-light" href="{{ url_for('records') }}">Reset</a>
+  </div>
+</form>
+
+<div class="card">
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Timestamp</th><th>Username</th><th>IP address</th><th>Event type</th><th>Category</th><th>Message</th><th>Investigation</th></tr></thead>
+    <tbody>
+    {% for e in r.rows %}
+      <tr>
+        <td class="nowrap">{{ e.event_time|dt }}</td>
+        <td>{{ e.username or '—' }}</td>
+        <td>{% if e.ip_address %}<code>{{ e.ip_address }}</code>{% else %}—{% endif %}</td>
+        <td><span class="badge b-{{ e.type_code|lower }}">{{ e.type_code.replace('_',' ').title() }}</span></td>
+        <td>{{ e.category.title() }}</td>
+        <td class="msg">{{ e.message }}</td>
+        <td>
+          {% if e.flag_rules %}
+            <span class="badge b-flag" title="{{ e.flag_reasons }}">Investigate</span>
+            <div class="small muted">{{ e.flag_reasons }}</div>
+          {% else %}<span class="muted">OK</span>{% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="muted center">No records match these filters.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% if r.pages > 1 %}
+  <nav class="pager">
+    {% if r.page > 1 %}<a href="{{ page_url(1) }}">« First</a><a href="{{ page_url(r.page - 1) }}">‹ Prev</a>{% endif %}
+    <span class="current">Page {{ r.page }} / {{ r.pages }}</span>
+    {% if r.page < r.pages %}<a href="{{ page_url(r.page + 1) }}">Next ›</a><a href="{{ page_url(r.pages) }}">Last »</a>{% endif %}
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Import result{% endblock %}
+
+{% block content %}
+<div class="page-head"><div><h1>Import: {{ info.original_name }}</h1>
+<p class="muted">Uploaded {{ info.uploaded_at|dt }} · {{ info.file_size }} bytes</p></div>
+<a class="btn" href="{{ url_for('dashboard') }}">Go to dashboard</a></div>
+
+<section class="cards">
+  <div class="stat"><span class="stat-label">Lines in file</span><span class="stat-value">{{ info.total_lines }}</span></div>
+  <div class="stat ok"><span class="stat-label">Processed &amp; saved</span><span class="stat-value">{{ info.parsed_lines }}</span></div>
+  <div class="stat bad"><span class="stat-label">Rejected lines</span><span class="stat-value">{{ info.rejected_lines }}</span></div>
+  <div class="stat warn"><span class="stat-label">Duplicates skipped</span><span class="stat-value">{{ info.duplicate_events }}</span></div>
+</section>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>What was found in this file</h2>
+    <table class="compact">
+      <thead><tr><th>Event type</th><th>Category</th><th>Count</th></tr></thead>
+      <tbody>
+      {% for t in by_type %}<tr><td>{{ t.type_code.replace('_',' ').title() }}</td><td>{{ t.category.title() }}</td><td><b>{{ t.n }}</b></td></tr>
+      {% else %}<tr><td colspan="3" class="muted">No new events were saved from this file.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+    <p class="small"><a href="{{ url_for('records', file_id=info.file_id) }}">View this file's records →</a></p>
+  </div>
+
+  <div class="card">
+    <h2>Rejected lines <small>(first {{ rejected|length }})</small></h2>
+    {% if rejected %}
+    <div class="table-scroll short">
+    <table class="compact">
+      <thead><tr><th>Line</th><th>Reason</th><th>Content</th></tr></thead>
+      <tbody>
+      {% for r in rejected %}<tr><td>{{ r.line_number }}</td><td>{{ r.reason }}</td><td class="msg"><code>{{ r.raw_line }}</code></td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<p class="muted">Every non-blank line was understood.</p>{% endif %}
+  </div>
+</div>
+{% endblock %}
